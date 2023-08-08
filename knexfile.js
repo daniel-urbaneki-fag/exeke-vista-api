@@ -1,11 +1,13 @@
+const dotenv = require('dotenv')
+dotenv.config()
 module.exports = {
     client: 'mysql',
     connection: {
-        host : '127.0.0.1',
-        port : 3306,
-        user : 'root',
-        password : 'Daniel250997*',
-        database : 'exeke'
+      host: process.env.HOST,
+      port: process.env.PORT,
+      database: process.env.DATABASE,
+      user: process.env.USER,
+      password: process.env.PASSWORD
     },
     pool: {
       min: 2,

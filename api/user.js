@@ -23,7 +23,11 @@ module.exports = app => {
             !endereco.cep ||
             !endereco.cidade ||
             !endereco.estado) return res.status(400).send('Endereço incompleto!')
+        
+        if(!pessoa.nome || !pessoa.email || !pessoa.telefone) return res.status(400).send('Informar Nome/Email/Telefone')
         if(!pessoa.cpf) return res.status(400).send('Informar Cpf!')
+
+        if(!usuario.usuario || !usuario.senha || !usuario.funcao) return res.status(400).send("Informe dados de usuário")
         
         const pessoaDb = await app.db('pessoa')
         .where({ cpf: pessoa.cpf })
@@ -37,13 +41,19 @@ module.exports = app => {
 
         if(usuarioDb) return res.status(400).send('Nome de usuário já cadastrado!')
 
-        const isEndereco = await app.db('endereco')
-        .where({ cep: endereco.cep })
+        const emailTrue = await app.db('pessoa')
+        .where({ email: pessoa.email })
         .first()
 
-        if(isEndereco) return res.status(400).send('O Cep já esta cadastrado!')
+        if(emailTrue) return res.status(400).send('Email já esta cadastrado !')
 
-        if(!isEndereco && endereco) {
+        let idEndereco = await app.db('endereco')
+            .select('id')
+            .where({ cep: endereco.cep  })
+            .andWhere({ numero: endereco.numero })
+            .first()
+        
+        if(!idEndereco) {
             endereco.logradouro = endereco.logradouro.charAt(0).toUpperCase() + endereco.logradouro.slice(1)
             endereco.complemento = endereco.complemento.charAt(0).toUpperCase() + endereco.complemento.slice(1)
             endereco.bairro = endereco.bairro.charAt(0).toUpperCase() + endereco.bairro.slice(1)
@@ -53,22 +63,14 @@ module.exports = app => {
             .insert(endereco)
             .then(_ => res.status(204))
             .catch(err => res.status(500).send(err))
-        }
-
-        const idEndereco = await app.db('endereco')
+            
+            idEndereco = await app.db('endereco')
             .select('id')
-            .where({ cep: endereco.cep })
+            .where({ cep: endereco.cep  })
+            .andWhere({ numero: endereco.numero })
             .first()
-
-        if(!pessoa.nome || !pessoa.email) return res.status(400).send('Informar Nome/Email')
-        //if(!pessoa.password) return res.status(400).send('Informe uma senha !')
+        }
         
-        const emailTrue = await app.db('pessoa')
-        .where({ email: pessoa.email })
-        .first()
-
-        if(emailTrue) return res.status(400).send('Email já esta cadastrado !')
-
         pessoa.id_endereco = idEndereco.id
 
         if(!pessoaDb) {
