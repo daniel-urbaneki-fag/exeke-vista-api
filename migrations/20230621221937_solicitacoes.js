@@ -8,7 +8,7 @@ exports.up = function(knex) {
         table.integer('id_usuario').unsigned().references('id').inTable('usuarios').notNullable();  
         table.integer('id_estrutura').unsigned().references('id').inTable('estrutura').notNullable();   
         table.date('data_inicio').notNull()
-        table.date('data_fim').notNull()
+        table.date('data_fim')
     })
 };
 
