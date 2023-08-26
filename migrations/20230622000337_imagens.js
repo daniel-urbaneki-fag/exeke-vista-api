@@ -4,10 +4,9 @@
  */
 exports.up = function(knex) {
     return knex.schema.createTable('imagens', table => {
-        table.increments('id').primary()
-        table.integer('id_solicitacao').unsigned().references('id').inTable('usuarios').notNullable();     
+        table.increments('id').primary()     
         table.string('nome_imagem').notNull()
-        table.string('base64').notNull()
+        table.string('url_image').notNull()
     })
 };
 

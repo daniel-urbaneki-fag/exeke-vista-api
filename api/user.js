@@ -1,6 +1,6 @@
 module.exports = app => {
     const get = (req, res) => {
-        app.db('pessoa')
+        app.db('pessoas')
             .select('id', 'nome', 'cpf', 'email')
             .then(pessoa => res.json(pessoa))
             .catch(err => res.status(500).send(err))
@@ -29,7 +29,7 @@ module.exports = app => {
 
         if(!usuario.usuario || !usuario.senha || !usuario.funcao) return res.status(400).send("Informe dados de usuário")
         
-        const pessoaDb = await app.db('pessoa')
+        const pessoaDb = await app.db('pessoas')
         .where({ cpf: pessoa.cpf })
         .first()
 
@@ -41,13 +41,13 @@ module.exports = app => {
 
         if(usuarioDb) return res.status(400).send('Nome de usuário já cadastrado!')
 
-        const emailTrue = await app.db('pessoa')
+        const emailTrue = await app.db('pessoas')
         .where({ email: pessoa.email })
         .first()
 
         if(emailTrue) return res.status(400).send('Email já esta cadastrado !')
 
-        let idEndereco = await app.db('endereco')
+        let idEndereco = await app.db('enderecos')
             .select('id')
             .where({ cep: endereco.cep  })
             .andWhere({ numero: endereco.numero })
@@ -59,12 +59,12 @@ module.exports = app => {
             endereco.bairro = endereco.bairro.charAt(0).toUpperCase() + endereco.bairro.slice(1)
             endereco.cidade = endereco.cidade.charAt(0).toUpperCase() + endereco.cidade.slice(1)
             endereco.estado = endereco.estado.charAt(0).toUpperCase() + endereco.estado.slice(1)
-            await app.db('endereco')
+            await app.db('enderecos')
             .insert(endereco)
             .then(_ => res.status(204))
             .catch(err => res.status(500).send(err))
             
-            idEndereco = await app.db('endereco')
+            idEndereco = await app.db('enderecos')
             .select('id')
             .where({ cep: endereco.cep  })
             .andWhere({ numero: endereco.numero })
@@ -75,13 +75,13 @@ module.exports = app => {
 
         if(!pessoaDb) {
             pessoa.nome = pessoa.nome.charAt(0).toUpperCase() + pessoa.nome.slice(1)
-            await app.db('pessoa')
+            await app.db('pessoas')
                 .insert(pessoa)
                 .then(_ => res.status(204))
                 .catch(err => res.status(500).send(err))
         }
 
-        const idPessoa = await app.db('pessoa')
+        const idPessoa = await app.db('pessoas')
             .select('id')
             .where({ cpf: pessoa.cpf })
             .first()
