@@ -1,6 +1,7 @@
 module.exports = app => {
-    app.get('/login', app.api.user.get)
-    app.get('/getSolicitacoes',app.api.solicitacoes.getSolicitacoes)
-    app.post('/save', app.api.user.save)
+    app.post('/login', app.api.autenticacoes.login)
+    app.get('/getsolicitacoes',app.api.solicitacoes.getSolicitacoes)
+    app.post('/createempresa', app.api.empresa.create)
+    app.post('/createuser', app.api.user.create)
     app.post('/createsolicitacao', app.api.solicitacoes.createSolicitacao)
 }

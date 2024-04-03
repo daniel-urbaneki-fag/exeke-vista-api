@@ -1,12 +1,5 @@
 module.exports = app => {
-    const get = (req, res) => {
-        app.db('pessoas')
-            .select('id', 'nome', 'cpf', 'email')
-            .then(pessoa => res.json(pessoa))
-            .catch(err => res.status(500).send(err))
-    }
-
-    const save = async (req, res) => {
+    const create = async (req, res) => {
         
         if(!req.body.endereco) return res.status(400).send('Informar Endereço')
         if(!req.body.pessoa) return res.status(400).send('Informar Pessoa')
@@ -27,7 +20,7 @@ module.exports = app => {
         if(!pessoa.nome || !pessoa.email || !pessoa.telefone) return res.status(400).send('Informar Nome/Email/Telefone')
         if(!pessoa.cpf) return res.status(400).send('Informar Cpf!')
 
-        if(!usuario.usuario || !usuario.senha || !usuario.funcao) return res.status(400).send("Informe dados de usuário")
+        if(!usuario.usuario || !usuario.senha || !usuario.funcao || !usuario.id_empresa) return res.status(400).send("Informe dados de usuário")
         
         const pessoaDb = await app.db('pessoas')
         .where({ cpf: pessoa.cpf })
@@ -97,5 +90,5 @@ module.exports = app => {
         }
     }
     
-    return { get , save }
+    return { create }
 }

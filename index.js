@@ -11,5 +11,5 @@ consign()
     .into(app)
 
 app.listen(8080, () => {
-    console.log('backend started...')
+    console.log('backend started in http://localhost:8080 ...')
 })
