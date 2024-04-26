@@ -20,8 +20,5 @@ COPY . .
 # Gera o prisma client e atualiza o prisma schema
 # RUN npm prisma generate 
 
-# Expoê a porta 3010 para o protocolo TCP/IP
-EXPOSE 8080
-
 # Faz a build do código fonte
 CMD ["npm", "start"]
