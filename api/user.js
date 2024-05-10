@@ -1,4 +1,4 @@
-module.exports = app => {
+module.exports = app =>  {
     const create = async (req, res) => {
         
         if(!req.body.endereco) return res.status(400).send('Informar Endereço')
