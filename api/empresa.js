@@ -8,8 +8,7 @@ module.exports = app => {
         const empresa = { ...req.body.empresa }
 
         if(!endereco.logradouro || 
-            !endereco.numero  || 
-            !endereco.complemento ||
+            !endereco.numero  ||
             !endereco.bairro ||
             !endereco.cep ||
             !endereco.cidade ||
@@ -20,7 +19,7 @@ module.exports = app => {
             !empresa.telefone ||
             !empresa.email ||
             !empresa.cnpj ||
-            !empresa.tipo) return res.status(400).send('Endereço incompleto!')
+            !empresa.tipo) return res.status(400).send('Dados de empresa incompleto!')
         
         const empresaDb = await app.db('empresas')
             .where({ cnpj: empresa.cnpj })
@@ -59,7 +58,7 @@ module.exports = app => {
             empresa.nome_fantasia = empresa.nome_fantasia.charAt(0).toUpperCase() + empresa.nome_fantasia.slice(1)
             await app.db('empresas')
                 .insert(empresa)
-                .then(_ => res.status(204).send())
+                .then(_ => res.status(200).send("Empresa cadastrada com sucesso!"))
                 .catch(err => res.status(500).send(err))
         }
     }
