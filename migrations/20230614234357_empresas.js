@@ -10,7 +10,7 @@ exports.up = function(knex) {
         table.string('razao_social').notNullable();   
         table.string('telefone').notNullable();
         table.string('email').notNullable(); 
-        table.integer('cnpj').notNullable(); 
+        table.string('cnpj').notNullable(); 
         table.string('tipo').notNullable(); 
     })
 };

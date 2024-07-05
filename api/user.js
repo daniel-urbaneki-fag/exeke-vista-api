@@ -1,3 +1,5 @@
+const bcrypt = require('bcrypt');
+
 module.exports = app => {
     const create = async (req, res) => {
         
@@ -10,8 +12,7 @@ module.exports = app => {
         const usuario = {...req.body.usuario }
 
         if(!endereco.logradouro || 
-            !endereco.numero  || 
-            !endereco.complemento ||
+            !endereco.numero ||
             !endereco.bairro ||
             !endereco.cep ||
             !endereco.cidade ||
@@ -83,9 +84,15 @@ module.exports = app => {
 
         if(!usuarioDb) {
             usuario.usuario = usuario.usuario.charAt(0).toUpperCase() + usuario.usuario.slice(1)
+            const hashedPassword = await bcrypt.hash(usuario.senha, 10);
+            
+
             await app.db('usuarios')
-                .insert(usuario)
-                .then(_ => res.status(204).send())
+                .insert({
+                    ...usuario,
+                    senha: hashedPassword
+                })
+                .then(_ => res.status(200).send('Usuário cadastrado com sucesso!'))
                 .catch(err => res.status(500).send(err))
         }
     }
