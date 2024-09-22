@@ -10,6 +10,6 @@ consign()
     .then('./config/routes.js')
     .into(app)
 
-app.listen(8080, () => {
-    console.log('backend started in http://localhost:8080 ...')
+app.listen(3000, () => {
+    console.log('backend started in http://localhost:3000 ...')
 })
