@@ -53,5 +53,9 @@ module.exports = app => {
         }
     };
 
-    return { login, authenticateJWT }
+    const verifyToken = (req, res) => {
+        res.json({ message: 'Acesso concedido!', user: req.user });
+    }
+
+    return { login, authenticateJWT, verifyToken }
 }
