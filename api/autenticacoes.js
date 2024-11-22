@@ -10,6 +10,8 @@ module.exports = app => {
 
         if (!loginData.usuario || !loginData.senha) return res.status(400).send('Informar usuário e senha!');
 
+        let usuario = {}
+
         try {
             const usuarioDb = await app.db('usuarios')
                 .where({ usuario: loginData.usuario })
@@ -27,7 +29,9 @@ module.exports = app => {
 
             const token = jwt.sign({ id: usuarioDb.id, usuario: usuarioDb.usuario }, process.env.SECRET_KEY, { expiresIn: '1h' });
 
-            return res.status(200).json({ message: 'Logado com sucesso!', token });
+            usuario['id'] = usuarioDb.id
+
+            return res.status(200).json({ message: 'Logado com sucesso!', token: token, usuario: usuario});
         } catch (err) {
             console.error('Erro ao fazer login:', err);
             return res.status(500).send(err.message || 'Erro interno');
