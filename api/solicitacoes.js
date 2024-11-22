@@ -54,11 +54,13 @@ module.exports = app => {
 
         if (!usuarioDb) return res.status(400).send('Usuário não existe')
 
+        console.log(tipo_estrutura)
+
         if (estrutura.tipo_estrutura == "concreto") {
-            if (!tipo_estrutura.vao_livre ||
-                !tipo_estrutura.tirante_central ||
-                !tipo_estrutura.agulhamento ||
-                !tipo_estrutura.contra_aventamento ||
+            if (!tipo_estrutura.vao_livre === undefined || typeof tipo_estrutura.vao_livre !== 'number' ||
+                !tipo_estrutura.tirante_central === undefined || typeof tipo_estrutura.tirante_central  !== 'boolean' ||
+                !tipo_estrutura.agulhamento === undefined || typeof tipo_estrutura.agulhamento  !== 'boolean' ||
+                !tipo_estrutura.contra_aventamento === undefined || typeof tipo_estrutura.contra_aventamento  !== 'boolean' ||
                 !tipo_estrutura.tipo_ter ||
                 !tipo_estrutura.tipo_travamento) return res.status(400).send('Estrutura incompleta!')
 
@@ -72,23 +74,15 @@ module.exports = app => {
         } else if (estrutura.tipo_estrutura == "madeira") {
             if (
                 !tipo_estrutura.tipo_corte_tes ||
-                tipo_estrutura.diametro_tronco_tes === undefined ||
-                typeof tipo_estrutura.diametro_tronco_tes !== 'number' ||
-                tipo_estrutura.larg_corte_tes === undefined ||
-                typeof tipo_estrutura.larg_corte_tes !== 'number' ||
-                tipo_estrutura.alt_corte_tes === undefined ||
-                typeof tipo_estrutura.alt_corte_tes !== 'number' ||
-                tipo_estrutura.alt_tes === undefined ||
-                typeof tipo_estrutura.alt_tes !== 'number' ||
-                tipo_estrutura.vao_livre_tes === undefined ||
-                typeof tipo_estrutura.vao_livre_tes !== 'number' ||
-                !tipo_estrutura.forma_chumbamento ||
-                tipo_estrutura.dis_pilares === undefined ||
-                typeof tipo_estrutura.dis_pilares !== 'number' ||
-                tipo_estrutura.larg_corte_ter === undefined ||
-                typeof tipo_estrutura.larg_corte_ter !== 'number' ||
-                tipo_estrutura.alt_corte_ter === undefined ||
-                typeof tipo_estrutura.alt_corte_ter !== 'number'
+                tipo_estrutura.diametro_tronco_tes === undefined || typeof tipo_estrutura.diametro_tronco_tes !== 'number' ||
+                tipo_estrutura.larg_corte_tes === undefined || typeof tipo_estrutura.larg_corte_tes !== 'number' ||
+                tipo_estrutura.alt_corte_tes === undefined || typeof tipo_estrutura.alt_corte_tes !== 'number' ||
+                tipo_estrutura.alt_tes === undefined || typeof tipo_estrutura.alt_tes !== 'number' ||
+                tipo_estrutura.vao_livre_tes === undefined || typeof tipo_estrutura.vao_livre_tes !== 'number' ||
+                !tipo_estrutura.forma_chumbamento || 
+                tipo_estrutura.dis_pilares === undefined || typeof tipo_estrutura.dis_pilares !== 'number' ||
+                tipo_estrutura.larg_corte_ter === undefined || typeof tipo_estrutura.larg_corte_ter !== 'number' ||
+                tipo_estrutura.alt_corte_ter === undefined || typeof tipo_estrutura.alt_corte_ter !== 'number'
             ) {
                 return res.status(400).send('Estrutura incompleta ou dados incorretos!');
             }
@@ -102,28 +96,17 @@ module.exports = app => {
         } else if (estrutura.tipo_estrutura == "metalica") {
             if (
                 !tipo_estrutura.tipo_perfil_tes ||
-                tipo_estrutura.espess_perf_tes === undefined ||
-                typeof tipo_estrutura.espess_perf_tes !== 'number' ||
-                tipo_estrutura.larg_perf_tes === undefined ||
-                typeof tipo_estrutura.larg_perf_tes !== 'number' ||
-                tipo_estrutura.alt_perf_tes === undefined ||
-                typeof tipo_estrutura.alt_perf_tes !== 'number' ||
-                tipo_estrutura.alt_tes === undefined ||
-                typeof tipo_estrutura.alt_tes !== 'number' ||
-                tipo_estrutura.vao_livre_tes === undefined ||
-                typeof tipo_estrutura.vao_livre_tes !== 'number' ||
-                tipo_estrutura.contra_aventamento === undefined ||
-                typeof tipo_estrutura.contra_aventamento !== 'boolean' ||
-                tipo_estrutura.agulhamento === undefined ||
-                typeof tipo_estrutura.agulhamento !== 'boolean' ||
-                tipo_estrutura.dis_pilares === undefined ||
-                typeof tipo_estrutura.dis_pilares !== 'number' ||
-                tipo_estrutura.perf_enrijecido_ter === undefined ||
-                typeof tipo_estrutura.perf_enrijecido_ter !== 'number' ||
-                tipo_estrutura.larg_perf_ter === undefined ||
-                typeof tipo_estrutura.larg_perf_ter !== 'number' ||
-                tipo_estrutura.alt_perf_ter === undefined ||
-                typeof tipo_estrutura.alt_perf_ter !== 'number'
+                tipo_estrutura.espess_perf_tes === undefined || typeof tipo_estrutura.espess_perf_tes !== 'number' ||
+                tipo_estrutura.larg_perf_tes === undefined || typeof tipo_estrutura.larg_perf_tes !== 'number' ||
+                tipo_estrutura.alt_perf_tes === undefined || typeof tipo_estrutura.alt_perf_tes !== 'number' ||
+                tipo_estrutura.alt_tes === undefined || typeof tipo_estrutura.alt_tes !== 'number' ||
+                tipo_estrutura.vao_livre_tes === undefined || typeof tipo_estrutura.vao_livre_tes !== 'number' ||
+                tipo_estrutura.contra_aventamento === undefined || typeof tipo_estrutura.contra_aventamento !== 'boolean' ||
+                tipo_estrutura.agulhamento === undefined || typeof tipo_estrutura.agulhamento !== 'boolean' ||
+                tipo_estrutura.dis_pilares === undefined || typeof tipo_estrutura.dis_pilares !== 'number' ||
+                tipo_estrutura.perf_enrijecido_ter === undefined || typeof tipo_estrutura.perf_enrijecido_ter !== 'number' ||
+                tipo_estrutura.larg_perf_ter === undefined || typeof tipo_estrutura.larg_perf_ter !== 'number' ||
+                tipo_estrutura.alt_perf_ter === undefined || typeof tipo_estrutura.alt_perf_ter !== 'number'
             ) {
                 return res.status(400).send('Estrutura metálica incompleta ou dados incorretos!');
             }
