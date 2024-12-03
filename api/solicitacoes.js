@@ -2,7 +2,16 @@ module.exports = app => {
 
     const getSolicitacoes = async (req, res) => {
         await app.db("solicitacoes")
-            .select('id_usuario', 'id_estrutura', 'data_inicio', 'data_fim')
+            .select(
+                "solicitacoes.id",
+                "usuarios.usuario as nome_usuario",
+                "solicitacoes.data_inicio",
+                "solicitacoes.data_fim",
+                "pessoas.nome as nome_cliente",
+            )
+            .innerJoin("usuarios", "solicitacoes.id_usuario", "usuarios.id")
+            .innerJoin("pessoas", "solicitacoes.id_cliente", "pessoas.id")
+
             .then(users => res.json(users))
             .catch(err => res.status(500).send(err))
     }
@@ -48,19 +57,62 @@ module.exports = app => {
 
         let idEstrutura = ""
 
+        const pessoaDb = await app.db('pessoas')
+        .where({ cpf: pessoa.cpf })
+        .first()
+
         const usuarioDb = await app.db('usuarios')
             .where({ id: solicitacao.id_usuario })
             .first()
 
         if (!usuarioDb) return res.status(400).send('Usuário não existe')
 
-        console.log(tipo_estrutura)
+        let idEndereco = await app.db('enderecos')
+            .select('id')
+            .where({ cep: endereco.cep })
+            .andWhere({ numero: endereco.numero })
+            .first()
+
+        if (!idEndereco) {
+            endereco.logradouro = endereco.logradouro.charAt(0).toUpperCase() + endereco.logradouro.slice(1)
+            endereco.complemento = endereco.complemento.charAt(0).toUpperCase() + endereco.complemento.slice(1)
+            endereco.bairro = endereco.bairro.charAt(0).toUpperCase() + endereco.bairro.slice(1)
+            endereco.cidade = endereco.cidade.charAt(0).toUpperCase() + endereco.cidade.slice(1)
+            endereco.estado = endereco.estado.charAt(0).toUpperCase() + endereco.estado.slice(1)
+            await app.db('enderecos')
+                .insert(endereco)
+                .then(_ => res.status(204))
+                .catch(err => res.status(500).send(err))
+
+            idEndereco = await app.db('enderecos')
+                .select('id')
+                .where({ cep: endereco.cep })
+                .andWhere({ numero: endereco.numero })
+                .first()
+        }
+
+        pessoa.id_endereco = idEndereco.id
+
+        if (!pessoaDb) {
+            pessoa.nome = pessoa.nome.charAt(0).toUpperCase() + pessoa.nome.slice(1)
+            await app.db('pessoas')
+                .insert(pessoa)
+                .then(_ => res.status(204))
+                .catch(err => res.status(500).send(err))
+        }
+
+        const idPessoa = await app.db('pessoas')
+            .select('id')
+            .where({ cpf: pessoa.cpf })
+            .first()
+
+        solicitacao.id_cliente = idPessoa.id
 
         if (estrutura.tipo_estrutura == "concreto") {
             if (!tipo_estrutura.vao_livre === undefined || typeof tipo_estrutura.vao_livre !== 'number' ||
-                !tipo_estrutura.tirante_central === undefined || typeof tipo_estrutura.tirante_central  !== 'boolean' ||
-                !tipo_estrutura.agulhamento === undefined || typeof tipo_estrutura.agulhamento  !== 'boolean' ||
-                !tipo_estrutura.contra_aventamento === undefined || typeof tipo_estrutura.contra_aventamento  !== 'boolean' ||
+                !tipo_estrutura.tirante_central === undefined || typeof tipo_estrutura.tirante_central !== 'boolean' ||
+                !tipo_estrutura.agulhamento === undefined || typeof tipo_estrutura.agulhamento !== 'boolean' ||
+                !tipo_estrutura.contra_aventamento === undefined || typeof tipo_estrutura.contra_aventamento !== 'boolean' ||
                 !tipo_estrutura.tipo_ter ||
                 !tipo_estrutura.tipo_travamento) return res.status(400).send('Estrutura incompleta!')
 
@@ -79,7 +131,7 @@ module.exports = app => {
                 tipo_estrutura.alt_corte_tes === undefined || typeof tipo_estrutura.alt_corte_tes !== 'number' ||
                 tipo_estrutura.alt_tes === undefined || typeof tipo_estrutura.alt_tes !== 'number' ||
                 tipo_estrutura.vao_livre_tes === undefined || typeof tipo_estrutura.vao_livre_tes !== 'number' ||
-                !tipo_estrutura.forma_chumbamento || 
+                !tipo_estrutura.forma_chumbamento ||
                 tipo_estrutura.dis_pilares === undefined || typeof tipo_estrutura.dis_pilares !== 'number' ||
                 tipo_estrutura.larg_corte_ter === undefined || typeof tipo_estrutura.larg_corte_ter !== 'number' ||
                 tipo_estrutura.alt_corte_ter === undefined || typeof tipo_estrutura.alt_corte_ter !== 'number'
